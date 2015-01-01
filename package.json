@@ -1,0 +1,15 @@
+{
+  "name": "game-controller",
+  "version": "0.0.1",
+  "description": "a simple game controller using socket.io and create.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Yiou Chen <chen.yiou1992@Gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.10.6",
+    "socket.io": "^1.2.1"
+  }
+}
