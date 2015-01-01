@@ -3,7 +3,7 @@ var server=require('http').Server(app);
 var io=require('socket.io')(server);
 
 app.get('/',function(req,res){
-	res.sendFile(__dirname+'/index.html');
+	res.sendFile(__dirname+'/game.html');
 });
 app.get('/player',function(req, res){
 	res.sendFile(__dirname+'/controller.html');
@@ -18,7 +18,7 @@ app.get("/Assets/*",function (req, res){
 io.on('connection',function(socket){
 	console.log('a user connected');
 	socket.on('dir',function(msg){
-		console.log("receive a dir event");
+		console.log("receive a dir event  name:"+msg.name+"  type: "+msg.type);
 		io.emit('dir',msg);
 	});
 	socket.on('disconnect',function(){

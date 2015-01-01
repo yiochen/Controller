@@ -2,6 +2,11 @@ var stage;
 var queue;
 var ball;
 var socket;
+var isUp=false;
+var isDown=false;
+var isLeft=false;
+var isRight=false;
+
 function init(){
 	console.log("initiating");
 	stage=new createjs.Stage("gameScene");
@@ -14,13 +19,25 @@ function init(){
 	socket=io.connect();
 	registerMessage(socket);
 }
+
 function registerMessage(socket){
 	socket.on('dir',function(msg){
-		console.log("dir change :"+msg);
-		if (msg.direction=="down"){
-			ball.y+=10;
+		var value=msg.type;
+		switch (msg.name){
+			case 0:
+				isUp=value;
+				break;
+			case 1:
+				isDown=value;
+				break;
+			case 2:
+				isLeft=value;
+				break;
+			case 3:
+				isRight=value;
+				break;
 		}
-	})
+	});
 }
 function handleComplete(e){
 	console.log("load complete");
@@ -29,9 +46,17 @@ function handleComplete(e){
 	ball.graphics.beginFill("#000000").drawCircle(0,0,50);
 	ball.x=50;
 	ball.y=50;
+	createjs.Ticker.setFPS(60);
 	createjs.Ticker.addEventListener("tick",tick);
 	stage.addChild(ball);
 }
 function tick(e){
+	updateBall();
 	stage.update();
+}
+function updateBall(){
+	if (isUp) ball.y-=5;
+	if (isDown) ball.y+=5;
+	if (isLeft) ball.x-=5;
+	if (isRight) ball.x+=5;
 }
