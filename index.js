@@ -1,6 +1,7 @@
 var app=require('express')();
 var server=require('http').Server(app);
 var io=require('socket.io')(server);
+var nsp=io.of('/game');
 
 app.get('/',function(req,res){
 	res.sendFile(__dirname+'/game.html');
@@ -18,8 +19,7 @@ app.get("/Assets/*",function (req, res){
 io.on('connection',function(socket){
 	console.log('a user connected');
 	socket.on('dir',function(msg){
-		console.log("receive a dir event  name:"+msg.name+"  type: "+msg.type);
-		io.emit('dir',msg);
+		nsp.emit('dir',msg);
 	});
 	socket.on('disconnect',function(){
 		console.log('user disconnect');

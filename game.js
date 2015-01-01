@@ -11,18 +11,27 @@ function init(){
 	console.log("initiating");
 	stage=new createjs.Stage("gameScene");
 	queue=new createjs.LoadQueue(false);
+	queue.installPlugin(createjs.Sound);
 	queue.addEventListener("complete",handleComplete);
 	queue.loadManifest([
 		{id:"check",src:"Assets/check.png"},
 		{id:"sound",src:"Assets/slap.mp3"}
 		]);
-	socket=io.connect();
+	socket=io('/game');
 	registerMessage(socket);
 }
 
 function registerMessage(socket){
 	socket.on('dir',function(msg){
 		var value=msg.type;
+		if (value) {
+			console.log("do something");
+			var bmp=new createjs.Bitmap(queue.getResult("check"));
+            bmp.x=Math.random()*500;
+            bmp.y=Math.random()*500;
+            stage.addChild(bmp);
+            createjs.Sound.play("sound");
+		}
 		switch (msg.name){
 			case 0:
 				isUp=value;

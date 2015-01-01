@@ -9,13 +9,14 @@ function init(){
 
 	stage=new createjs.Stage("controller");
 	queue=new createjs.LoadQueue(false);
+	queue.installPlugin(createjs.Sound);
 	queue.addEventListener("complete",handleComplete);
 	queue.loadManifest([
 		{id:"check",src:"Assets/check.png"},
 		{id:"sound",src:"Assets/slap.mp3"}
 		]);
 	optimizeForTouchAndScreens();
-	socket=io.connect();
+	socket=io();
 	registerMessage(socket);
 }
 function optimizeForTouchAndScreens(){
@@ -24,9 +25,7 @@ function optimizeForTouchAndScreens(){
 	}
 }
 function registerMessage(socket){
-	// socket.on('dir',function(msg){
-	// 	console.log("dir change :"+msg);
-	// })
+	//currently no interesting message to listen to
 }
 function handleComplete(e){
 
