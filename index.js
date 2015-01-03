@@ -25,18 +25,20 @@ nspgame.on('connection',function (socket){
 	});
 })
 nspcontroller.on('connection',function(socket){
-	console.log('a controller client connected');
+	
 	usercount++;
 	var x=10;
 	var y=10;
+	socket.id=usercount;
+	console.log('a controller '+socket.id+' client connected');
 	socket.emit('init pos',{id:usercount});
 	nspgame.emit('new ball',{x:x,y:y,id:usercount});
 	socket.on('dir',function(msg){
 		nspgame.emit('dir',msg);
 	});
 	socket.on('disconnect',function(){
-		console.log('controller disconnect');
-		//do something to inform game scene client
+		console.log('controller '+socket.id +' disconnected');
+		nspgame.emit('lost controller',{id:socket.id});
 	});
 });
 server.listen(8000,function(){

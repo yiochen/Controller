@@ -33,6 +33,12 @@ function registerMessage(socket){
 		stage.addChild(ball);
 		balls[msg.id]=ball;
 	});
+	socket.on('lost controller',function(msg){
+		if (balls[msg.id]){
+			stage.removeChild(balls[msg.id]);
+			balls[msg.id]=null;
+		}
+	});
 	socket.on('dir',function(msg){
 		
 		var ball=balls[msg.id];
