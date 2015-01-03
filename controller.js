@@ -5,6 +5,7 @@ var up;
 var down;
 var left;
 var right;
+var keyRadius=100;
 function init(){
 
 	stage=new createjs.Stage("controller");
@@ -30,25 +31,28 @@ function registerMessage(socket){
 function handleComplete(e){
 
 	up=new createjs.Shape();
-	up.graphics.beginFill("#81F79F").drawCircle(0,0,50);
+	up.graphics.beginFill("#81F79F").drawCircle(0,0,keyRadius);
 	down=new createjs.Shape();
-	down.graphics.beginFill("#A9D0F5").drawCircle(0,0,50);
+	down.graphics.beginFill("#A9D0F5").drawCircle(0,0,keyRadius);
 	left=new createjs.Shape();
-	left.graphics.beginFill("#F5D0A9").drawCircle(0,0,50);
+	left.graphics.beginFill("#F5D0A9").drawCircle(0,0,keyRadius);
 	right=new createjs.Shape();
-	right.graphics.beginFill("#F5A9E1").drawCircle(0,0,50);
+	right.graphics.beginFill("#F5A9E1").drawCircle(0,0,keyRadius);
 
-	up.x=120.7;
-	up.y=50;
+	const sq2=1.4142;
+	var r=keyRadius;
+	var h=r*sq2;
+	up.x=r+h;
+	up.y=r;
 	up.code=0;
-	down.x=120.7;
-	down.y=191.4;
+	down.x=r+h;
+	down.y=r+2*h;
 	down.code=1;
-	left.x=50;
-	left.y=120.7;
+	left.x=r;
+	left.y=r+h;
 	left.code=2;
-	right.x=191.4;
-	right.y=120.7;
+	right.x=r+2*h;
+	right.y=r+h;
 	right.code=3;
 
 	up.addEventListener("mousedown",handleMouse);
