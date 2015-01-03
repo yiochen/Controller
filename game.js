@@ -1,11 +1,8 @@
 var stage;
 var queue;
-var ball;
+var balls=[];
 var socket;
-var isUp=false;
-var isDown=false;
-var isLeft=false;
-var isRight=false;
+
 
 function init(){
 	console.log("initiating");
@@ -22,7 +19,24 @@ function init(){
 }
 
 function registerMessage(socket){
+	socket.on('new ball',function(msg){
+		var ball=new createjs.Shape();
+		ball.graphics.beginFill("#000000").drawCircle(0,0,50);
+		ball.x=msg.x;
+		ball.y=msg.y;
+		ball.isUp=false;
+		ball.isDown=false;
+		ball.isLeft=false;
+		ball.isRight=false;
+		createjs.Ticker.setFPS(60);
+		createjs.Ticker.addEventListener("tick",tick);
+		stage.addChild(ball);
+		balls[msg.id]=ball;
+	});
 	socket.on('dir',function(msg){
+		
+		var ball=balls[msg.id];
+
 		var value=msg.type;
 		if (value) {
 			console.log("do something");
@@ -34,38 +48,37 @@ function registerMessage(socket){
 		}
 		switch (msg.name){
 			case 0:
-				isUp=value;
+				ball.isUp=value;
 				break;
 			case 1:
-				isDown=value;
+				ball.isDown=value;
 				break;
 			case 2:
-				isLeft=value;
+				ball.isLeft=value;
 				break;
 			case 3:
-				isRight=value;
+				ball.isRight=value;
 				break;
 		}
 	});
 }
 function handleComplete(e){
 	console.log("load complete");
-	
-	ball=new createjs.Shape();
-	ball.graphics.beginFill("#000000").drawCircle(0,0,50);
-	ball.x=50;
-	ball.y=50;
-	createjs.Ticker.setFPS(60);
-	createjs.Ticker.addEventListener("tick",tick);
-	stage.addChild(ball);
+
 }
 function tick(e){
-	updateBall();
+	updateBalls();
 	stage.update();
 }
-function updateBall(){
-	if (isUp) ball.y-=5;
-	if (isDown) ball.y+=5;
-	if (isLeft) ball.x-=5;
-	if (isRight) ball.x+=5;
+function updateBalls(){
+	for (var i=1;i<balls.length;i++){
+		if (balls[i]){
+			var ball=balls[i];
+			if (ball.isUp) ball.y-=5;
+			if (ball.isDown) ball.y+=5;
+			if (ball.isLeft) ball.x-=5;
+			if (ball.isRight) ball.x+=5;
+		}
+	}
+	
 }

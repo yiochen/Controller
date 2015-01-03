@@ -6,6 +6,7 @@ var down;
 var left;
 var right;
 var keyRadius=100;
+var id=0;
 function init(){
 
 	stage=new createjs.Stage("controller");
@@ -17,7 +18,7 @@ function init(){
 		{id:"sound",src:"Assets/slap.mp3"}
 		]);
 	optimizeForTouchAndScreens();
-	socket=io();
+	socket=io('/controller');
 	registerMessage(socket);
 }
 function optimizeForTouchAndScreens(){
@@ -26,7 +27,9 @@ function optimizeForTouchAndScreens(){
 	}
 }
 function registerMessage(socket){
-	//currently no interesting message to listen to
+	socket.on('init pos',function (msg){
+		id=msg.id;
+	})
 }
 function handleComplete(e){
 
@@ -74,7 +77,9 @@ function handleComplete(e){
 function handleMouse(e){
 	var type;
 	type=(e.type==="mousedown")?true:false;
-	socket.emit("dir",{user:"yiou",name:e.target.code,type:type});
+	if (id>0){
+		socket.emit("dir",{id:id,name:e.target.code,type:type});
+	}
 }
 function tick(e){
 	stage.update();

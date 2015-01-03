@@ -1,7 +1,9 @@
 var app=require('express')();
 var server=require('http').Server(app);
 var io=require('socket.io')(server);
-var nsp=io.of('/game');
+var nspgame=io.of('/game');
+var nspcontroller=io.of('/controller');
+var usercount=0;
 
 app.get('/',function(req,res){
 	res.sendFile(__dirname+'/game.html');
@@ -16,13 +18,25 @@ app.get("/Assets/*",function (req, res){
 	res.sendFile(__dirname+"/Assets"+req.path);
 })
 
-io.on('connection',function(socket){
-	console.log('a user connected');
+nspgame.on('connection',function (socket){
+	console.log('a game scene client connected');
+	socket.on('disconnect',function(){
+		console.log('game scene disconnect');
+	});
+})
+nspcontroller.on('connection',function(socket){
+	console.log('a controller client connected');
+	usercount++;
+	var x=10;
+	var y=10;
+	socket.emit('init pos',{id:usercount});
+	nspgame.emit('new ball',{x:x,y:y,id:usercount});
 	socket.on('dir',function(msg){
-		nsp.emit('dir',msg);
+		nspgame.emit('dir',msg);
 	});
 	socket.on('disconnect',function(){
-		console.log('user disconnect');
+		console.log('controller disconnect');
+		//do something to inform game scene client
 	});
 });
 server.listen(8000,function(){
