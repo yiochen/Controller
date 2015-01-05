@@ -34,6 +34,7 @@ nspcontroller.on('connection',function(socket){
 	socket.emit('init pos',{id:usercount});
 	nspgame.emit('new ball',{x:x,y:y,id:usercount});
 	socket.on('dir',function(msg){
+		console.log("dir "+msg.name+" type "+msg.type);
 		nspgame.emit('dir',msg);
 	});
 	socket.on('disconnect',function(){

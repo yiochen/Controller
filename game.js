@@ -45,25 +45,20 @@ function registerMessage(socket){
 
 		var value=msg.type;
 		if (value) {
-			console.log("do something");
-			var bmp=new createjs.Bitmap(queue.getResult("check"));
-            bmp.x=Math.random()*500;
-            bmp.y=Math.random()*500;
-            stage.addChild(bmp);
-            createjs.Sound.play("sound");
+			//do something
 		}
 		switch (msg.name){
-			case 0:
+			case 1:
 				ball.isUp=value;
 				break;
-			case 1:
-				ball.isDown=value;
-				break;
 			case 2:
-				ball.isLeft=value;
+				ball.isDown=value;
 				break;
 			case 3:
 				ball.isRight=value;
+				break;
+			case 4:
+				ball.isLeft=value;
 				break;
 		}
 	});

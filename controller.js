@@ -1,22 +1,24 @@
 var stage;
 var queue;
 var socket;
+/*
 var up;
 var down;
 var left;
 var right;
 var keyRadius=100;
-
+*/
 var inner=100;
 var powerInner=inner*inner;
 var innerPad;
 var outer=200;
 var outerPad;
 var padRadius=100;
-var stick;
+var stick=null;
 
 var x;
 var y;
+var dir=0;
 
 var id=0;
 function init(){
@@ -55,7 +57,7 @@ function drawPad(_x, _y){
 	outerPad.x=x;
 	outerPad.y=y;
 	stick=new createjs.Shape();
-	stick.graphics.beginFill("F5D0A9").drawCircle(0,0,stick);
+	stick.graphics.beginFill("#FF0000").drawCircle(0,0,padRadius);
 	stick.x=x;
 	stick.y=y;
 	stage.addChild(outerPad);
@@ -73,29 +75,45 @@ function relX(e){
 function relY(e){
 	return e.stageY-y;
 }
+function sign(x){
+	return (x>0)?1:0;
+}
 function handleMouseDown(e){
 	var _x=relX(e);
 	var _y=relY(e);
-	console.log(_x+'    '+_y);
 	var sq=Math.pow(_x,2)+Math.pow(_y,2);
 	if (sq>powerInner){
-		var ratio=powerInner/sq;
+		var ratio=Math.sqrt(powerInner/sq);
 		_x*=ratio;
 		_y*=ratio;
 	}
-	console.log(x+_x);
-	stick.x=e.stageX;
-	stick.y=e.stageY;
-	
+	stick.x=x+_x;
+	stick.y=y+_y;
+	//0 for untouch, 1 for up, 2 for down, 3 for right, 4 for left;
+	var newDir=sign(Math.abs(_x)-Math.abs(_y))*2+sign(_y-_x)+1;
+
+	if (newDir!=dir) {
+		console.log("old dir:"+dir+" new dir: "+newDir);
+		if (dir!=0){
+			socket.emit("dir",{id:id,name:dir,type:false});
+		}
+		
+		socket.emit("dir",{id:id,name:newDir,type:true});
+		dir=newDir;
+	}
+
 }
 function handlePressUp(e){
 	console.log("pressed up");
 	stick.x=x;
 	stick.y=y;
+	socket.emit("dir",{id:id,name:dir,type:false});
+	dir=0;
 }
 function handleComplete(e){
 	drawPad(200,200);
 	registerListener();
+	/*
 	up=new createjs.Shape();
 	up.graphics.beginFill("#81F79F").drawCircle(0,0,keyRadius);
 	down=new createjs.Shape();
@@ -129,7 +147,7 @@ function handleComplete(e){
 	left.addEventListener("pressup",handleMouse);
 	right.addEventListener("mousedown",handleMouse);
 	right.addEventListener("pressup",handleMouse);
-	
+	*/
 	createjs.Ticker.setFPS(60);
 	createjs.Ticker.addEventListener("tick",tick);
 	/*stage.addChild(up);
@@ -138,13 +156,14 @@ function handleComplete(e){
 	stage.addChild(right);
 	*/
 }
+/*
 function handleMouse(e){
 	var type;
 	type=(e.type==="mousedown")?true:false;
 	if (id>0){
 		socket.emit("dir",{id:id,name:e.target.code,type:type});
 	}
-}
+}*/
 function tick(e){
 	stage.update();
 }
