@@ -19,15 +19,10 @@ function init(){
 }
 
 function registerMessage(socket){
+	console.log('ready to use circle');
 	socket.on('new ball',function(msg){
-		var ball=new createjs.Shape();
-		ball.graphics.beginFill("#000000").drawCircle(0,0,50);
-		ball.x=msg.x;
-		ball.y=msg.y;
-		ball.isUp=false;
-		ball.isDown=false;
-		ball.isLeft=false;
-		ball.isRight=false;
+		var ball=new Circle("#000000");
+		
 		createjs.Ticker.setFPS(60);
 		createjs.Ticker.addEventListener("tick",tick);
 		stage.addChild(ball);
