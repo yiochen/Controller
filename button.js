@@ -1,3 +1,4 @@
+//from Beginning HTML5 Games with CreateJS by Brad Manderscheid
 (function(){
 
 	window.ui=window.ui||{};
